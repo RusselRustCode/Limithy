@@ -16,6 +16,6 @@ AnalysisResult (данные дашборда, которые вы ему отп
 2.src/data_ingestion/services.py Сервис Создайте $\text{TraceService}$, который использует $\text{TraceRepository}$ для сохранения данных.
 
 Настройка Роутера (FastAPI Gateway)
-1.src/api/routers/v1/trace.pyРоутерСоздайте $\text{APIRouter}$ с конечной точкой: POST /trace/log.ФункцияФункция должна принимать 
+1.src/api/routers/v1/trace.py Роутер Создайте $\text{APIRouter}$ с конечной точкой: POST /trace/log.Функция Функция должна принимать 
 $\text{TraceLog}$ в качестве входного аргумента (def post_log(log: TraceLog)), 
 вызывать $\text{TraceService}$ для сохранения лога и возвращать $\text{HTTP 201 Created}$ или $\text{200 OK}$.
