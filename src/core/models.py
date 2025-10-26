@@ -108,8 +108,9 @@ class TestParams(BaseModel):
 #Добавить компоненты для TraceLog
 #-------------------------
 class TraceLog(BaseModel):
-    student_id: str = Field(..., description="")
-    material_id: str = Field(..., description="")
+    student_id: str = Field(..., description="id Студента")
+    material_id: str = Field(..., description="id учебного материала")
+    question_id: str = Field(..., description="id Вопроса")
 
     attempts: int = Field(..., description="Количество попыток")
     is_correct: bool = Field(..., description="Правильность ответа")
