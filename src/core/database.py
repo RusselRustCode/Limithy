@@ -12,7 +12,7 @@ class DataBase:
 def connect_to_mongo():
     print(f"{settings.MONGODB_URL}")
     DataBase.client = AsyncIOMotorClient(settings.MONGODB_URL)
-    DataBase.db = AsyncIOMotorDatabase(settings.MONGODB_NAME)
+    DataBase.db = DataBase.client[settings.MONGODB_NAME]
     print(f"Подключено к {settings.MONGODB_NAME}")
 
 def close_mongo_db():

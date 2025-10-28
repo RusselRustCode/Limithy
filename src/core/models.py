@@ -70,7 +70,7 @@ class ContentParams(BaseModel):
         description="Фокусировка примеров (на теории или на реальных жизненных/научных кейсах)"
     )
 #-------------------------
-#Добавить компоненты для TraceLog
+#Добавить компоненты для Промта по генерации тестов(вопросов)
 class QuestionFormat(str, Enum):
     SINGLE_CHOICE = "Один правильный ответ (Multiple Choice Single Answer)"
     MULTIPLE_CHOICE = "Несколько правильных ответов (Multiple Choice Multiple Answer)"

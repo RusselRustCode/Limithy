@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     
     # Конфигурация MongoDB
     MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_NAME: str = "llm_analysis_db"
+    MONGODB_NAME: str = "LimithyDB"
 
     # Настройки для FastAPI
     API_V1_STR: str = "/v1"
