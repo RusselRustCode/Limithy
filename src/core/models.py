@@ -124,8 +124,9 @@ class TraceLog(BaseModel):
 
 #-------------------------
 #Добавить компоненты для AnalyseResult
-class StudentClassification(BaseModel):
+class StudentCluster(BaseModel):
     type: str = Field(..., description="")
+    cluster: int = Field(..., description="К какому кластеру принадлежит студент")
 
 class EffectivenessSummary(BaseModel):
     best_params: "ContentParams" = Field(..., description="Рекомендованные LLM-параметры для улучшения результатов в этой теме.")
@@ -137,10 +138,13 @@ class EngagementAnalyse(BaseModel):
 #-------------------------
 class AnalyseResult(BaseModel):
     last_analysis_date: datetime = Field(default_factory=datetime.utcnow, description="")
+    student_id: str = Field(..., description="ID студента")
+    topic_id: str = Field(..., description="ID темы")
 
-    classification: StudentClassification
-    effectiveness: EffectivenessSummary
-    engagement: EngagementAnalyse
+
+    studentcluster: StudentCluster = Field(..., description="")
+    effectiveness: EffectivenessSummary = Field(..., description="")
+    engagement: EngagementAnalyse = Field(..., description="")
 
     top_distractors_list: List[str] = Field(..., description="Список 5 самых проблемных дистракторов в этой теме/группе.")
 
