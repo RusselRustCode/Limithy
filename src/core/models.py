@@ -1,7 +1,35 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, BeforeValidator
+from bson import ObjectId
 from enum import Enum
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Annotated
+
+def convert_objectid(v):
+    if isinstance(v, ObjectId):
+        return str(v)
+    return v
+
+PyObjectId = Annotated[str, BeforeValidator(convert_objectid)] #Чекнуть BeforeValidator
+# ----------------- МОДЕЛИ АУТЕНТИФИКАЦИИ -----------------
+class TeacherLogin(BaseModel):
+    email: EmailStr = Field(...)
+    password: str = Field(...)
+
+class TeacherCreate(BaseModel):
+    email: EmailStr = Field(...)
+    full_name: str = Field(...)
+    password: str = Field(..., min_length=1)
+
+class TeacherDB(BaseModel):
+    id: PyObjectId = Field(alias="_id")
+    email: EmailStr
+    full_name: str
+    hashed_password: str
+    created_time: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        populate_by_name = True
+
 #Параметры для промпта, который передастяс LLM
 class OutputFormat(str, Enum):
     MARKDOWN = "Markdown"
