@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from datetime import timedelta
 class Settings(BaseSettings):
     """
     Класс для загрузки конфигурации из переменных окружения.
@@ -16,5 +16,9 @@ class Settings(BaseSettings):
     
     # Модель для указания файла .env
     model_config = SettingsConfigDict(env_file='.env', extra='ignore')
+
+    JWT_SECRET_KEY:str = "pZQaAqLu8AzwEatgwxMDifP9kj3Jjh6IJr-VQKOaS7o"
+    JWT_ALGORITHM:str = "HS256"
+    JWT_ACCESS_TOKEN_EXPIRE:timedelta = timedelta(minutes=30)
 
 settings = Settings()
