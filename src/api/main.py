@@ -1,14 +1,28 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from config.settings import settings
 from src.core.database import connect_to_mongo, close_mongo_db
 from src.data_ingestion.trace_repo import TraceRepository
+from src.api.routers.v1 import auth
+from src.api.routers.v1.auth import router
 import asyncio
+from authx import AuthX, AuthXConfig
+
+print("Secret key loaded:", bool(settings.JWT_SECRET_KEY))
+config = AuthXConfig(
+    JWT_SECRET_KEY = "pZQaAqLu8AzwEatgwxMDifP9kj3Jjh6IJr-VQKOaS7o",
+    JWT_ALGORITHM = settings.JWT_ALGORITHM,
+    # JWT_ACCESS_TOKEN_EXPIRE = settings.JWT_ACCESS_TOKEN_EXPIRE,
+    JWT_TOKEN_LOCATION = ["cookies"],
+)
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
 
+auth = AuthX(config=config)
+auth.handle_errors(app)
 
 
 @app.on_event("startup")
@@ -29,6 +43,13 @@ async def shutdown_event():
         print("Фоновая задача отменнена")
 
     close_mongo_db()
+
+
+app.include_router(
+    router,
+    prefix=settings.API_V1_STR,
+    tags=["Auth"]
+)
  
 # # from routers.v1.analysis import analysis
 # # app.include_router(
