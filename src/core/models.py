@@ -30,6 +30,11 @@ class TeacherDB(BaseModel):
     class Config:
         populate_by_name = True
 
+
+class LLMGeneratedContent(BaseModel):
+    reasoning: str
+    content: dict
+
 #Параметры для промпта, который передастяс LLM
 class OutputFormat(str, Enum):
     MARKDOWN = "Markdown"
@@ -78,7 +83,7 @@ class ContentParams(BaseModel):
         description="Использовать ли метафоры для облегчения усвоения материала"
     )
 
-    histoorical_content: UsageToggle = Field(
+    historical_content: UsageToggle = Field(
         ...,
         description="Использовать ли исторический контекст"
     )
@@ -123,6 +128,11 @@ class NumberOfChoices(int, Enum):
 class ContextRequirement(str, Enum):
     ABSTRACT = "Абстрактный (чистая математическая формулировка)"
     SCENARIO = "Сценарный (вопрос должен быть обернут в реальную/прикладную историю)"
+
+class DifficulityLevel(str, Enum):
+    EASY = "Легкий"
+    MEDIUM = "Средний"
+    HARD = "Сложный"
 #-------------------------
 
 class TestParams(BaseModel):
@@ -131,6 +141,7 @@ class TestParams(BaseModel):
     distractor_error_type: DistractorErrorType
     number_of_choices: NumberOfChoices
     context_requirement: ContextRequirement
+    difficulity_level: DifficulityLevel
 
 #-------------------------
 #Добавить компоненты для TraceLog
