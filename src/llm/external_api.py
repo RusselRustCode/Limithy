@@ -1,12 +1,12 @@
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage
 from langchain_gigachat.chat_models import GigaChat
-from src.llm.render import load_template, map_content_params_to_template, map_test_params_to_template, render_prompt_template
+from src.llm.render import load_template, map_content_params_to_template, map_test_params_to_template, render_prompt_template, map_example_params_to_template, map_terms_params_to_template, map_topics_params_to_template
 import logging
 import json
 from src.core.models import LLMGeneratedContent, ContentParams, TestParams, TermsParams, TopicsParams, ExampleParams
 from fastapi import HTTPException
 from pydantic import ValidationError
-from typing import TypeVar, Dict, Any, Callable
+from typing import TypeVar, Dict, Callable
 
 
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +15,11 @@ logger = logging.getLogger(__name__)
 ValidModels = TypeVar('ValidModels', ContentParams, TestParams, TermsParams, TopicsParams, ExampleParams)
 
 TEMPLATE_MAPPING: Dict[type, (str, Callable)] = {
-    
+    ContentParams: ("explanation.json", map_content_params_to_template),
+    TestParams: ("test_generate.json", map_test_params_to_template),
+    TopicsParams: ("topics.json", map_topics_params_to_template),
+    TermsParams: ("terms.json", map_terms_params_to_template),
+    ExampleParams: ("problem_example.json", map_example_params_to_template)
 }
 
 try: 

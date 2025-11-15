@@ -2,7 +2,7 @@ import json
 import os
 from typing import Dict, Any
 from string import Template
-from src.core.models import ContentParams, TestParams, OutputFormat
+from src.core.models import ContentParams, TestParams, OutputFormat, TopicsParams, TermsParams, ExampleParams
 
 
 PROMPT_TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "prompts")
@@ -35,6 +35,27 @@ def map_test_params_to_template(params: TestParams) -> Dict[str, str]:
         "difficulity_level": params.difficulity_level.value
     }
 
+    return mapping
+
+def map_topics_params_to_template(params: TopicsParams) -> Dict[str, str]:
+    mapping = {
+        "number_of_topics": params.number_of_topics
+    }
+    return mapping
+
+def map_terms_params_to_template(params: TermsParams) -> Dict[str, str]:
+    mapping = {
+        "topic_title": params.topic_title,
+        "number_of_terms": params.numbers_of_terms
+    }
+    return mapping
+
+def map_example_params_to_template(params: ExampleParams) -> Dict[str, str]:
+    mapping = {
+        "term_name": params.term_name,
+        "explanation_body": params.explanation_body,
+        "subject_specialization": params.subject_specialization
+    }
     return mapping
 
 def render_prompt_template(template_dict: Dict[str, Any], **kwargs) -> str:
