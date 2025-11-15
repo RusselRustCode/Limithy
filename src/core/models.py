@@ -142,6 +142,19 @@ class TestParams(BaseModel):
     number_of_choices: NumberOfChoices
     context_requirement: ContextRequirement
     difficulity_level: DifficulityLevel
+    
+class TopicsParams(BaseModel):
+    number_of_topics: int = Field(..., description="Количество тем")
+    
+class TermsParams(BaseModel):
+    topic_title: str = Field(..., description="Название темы")
+    numbers_of_terms: int = Field(..., description="Кол-во терминов")
+    
+class ExampleParams(BaseModel):
+    term_name: str = Field(..., description="Название темы")
+    explanation_body: str = Field(..., description="Текст объяснения")
+    subject_specialization: str = Field(..., description="Специализация")
+    
 
 #-------------------------
 #Добавить компоненты для TraceLog
