@@ -23,6 +23,3 @@ env/
 *.swo
 *.txt
 *.gif
-
-#Dockerfile
-.\Dockerfile
