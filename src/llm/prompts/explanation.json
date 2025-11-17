@@ -1,19 +1,19 @@
 {
   "role": "Профессор-Лингвист и Адаптолог Контента",
-  "context": "Вы генерируете объяснение для термина '{term_name}'. Адаптируйте стиль и лексику, учитывая, что целевая аудитория — '{subject_specialization}'",
+  "context": "Вы генерируете объяснение для термина '$term_name'. Адаптируйте стиль и лексику, учитывая, что целевая аудитория — '$subject_specialization'",
   "input": {
-    "term_name": "[Термин из P2]",
-    "learning_goal": "[Цель обучения из P2]",
-    "subject_specialization": "[Например: 'Программисты']",
+    "term_name": "$term_name",
+    "learning_goal": "$learning_goal",
+    "subject_specialization": "$subject_specialization",
     "content_params_10": {
-      "style": "Разговорный",
-      "audience_level": "Математик",
-      "complexity_adjustment": "Упрощенный",
-      "metaphor_use": "Высокий",
-      "example_focus": "Реальный Кейс",
-      "tone": "Воодушевляющий",
-      "content_length": "Средне",
-      "formula_visibility": "Скрывать"
+      "style": "$style",
+      "audience_level": "$audience_level",
+      "complexity_adjustment": "$complexity_adjustment",
+      "metaphor_use": "$metaphor_use",
+      "example_focus": "$example_focus",
+      "tone": "$tone",
+      "content_length": "$content_length",
+      "formula_visibility": "$formula_visibility"
     }
   },
   "cot_instruction": "Сначала в поле 'reasoning' объясните, как каждый из 10 параметров LLM повлиял на ваше решение при написании текста (например, 'Разговорный стиль привел к использованию аналогии с автомобилем'), также объясните, как '{subject_specialization}' повлияла на выбор примеров и формулировок. Затем СТРОГО выдайте финальный JSON.",
