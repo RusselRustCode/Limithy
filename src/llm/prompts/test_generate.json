@@ -4,14 +4,14 @@
   "input": {
     "term_name": "[Термин, например: 'Интеграл Римана']",
     "relevant_material_snippet": "[Краткий, самый важный отрывок из объяснения (Промпт 2)]",
-    "test_params_5": {
-      "question_format": "Несколько правильных ответов (Multiple Choice Multiple Answer)",
-      "question_type": "Расчетный/Проблемный",
-      "blum_level": "Применение Алгоритма",
-      "NumberOfChoices": "4 Варианта(один правильный и 3 дистрактора",
-      "difficulty_level": "Средний",
-      "distractor_focus": "Ошибка в Вычислении"
-    }
+    "test_params_6": {
+      "question_format": "$question_format", 
+      "cognitive_level": "$cognitive_level",
+      "number_of_choices": "$number_of_choices",
+      "difficulty_level": "$difficulty_level",
+      "distractor_error_type": "$distractor_error_type",
+      "context_requirement": "$context_requirement"
+      }
   },
   "cot_instruction": "Если 'question_type' - 'Расчетный/Проблемный' или 'Доказательство/Вывод', сначала выполните все шаги решения. Затем в поле 'reasoning' объясните, как 'distractor_focus' определил три неправильных варианта, имитирующих типовые ошибки студентов в вычислениях. СТРОГО выдайте финальный JSON.",
   "negative_constraints": "Вопрос должен иметь только один правильный ответ. Дистракторы должны быть правдоподобны и основываться на типовых математических ошибках, а не на случайном выборе.",

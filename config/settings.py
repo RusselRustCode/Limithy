@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Настройки для FastAPI
     API_V1_STR: str = "/v1"
-    PROJECT_NAME: str = "LLM Analysis Gateway"
+    PROJECT_NAME: str = "Limithy"
     
     # Модель для указания файла .env
     model_config = SettingsConfigDict(env_file='.env', extra='ignore')
