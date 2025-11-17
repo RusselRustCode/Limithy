@@ -4,10 +4,11 @@ from src.core.database import connect_to_mongo, close_mongo_db
 from src.data_ingestion.trace_repo import TraceRepository
 from src.api.routers.v1 import auth
 from src.api.routers.v1.auth import router
+from src.api.routers.v1.llm import llm_router
 import asyncio
 from authx import AuthX, AuthXConfig
 
-print("Secret key loaded:", bool(settings.JWT_SECRET_KEY))
+
 config = AuthXConfig(
     JWT_SECRET_KEY = "pZQaAqLu8AzwEatgwxMDifP9kj3Jjh6IJr-VQKOaS7o",
     JWT_ALGORITHM = settings.JWT_ALGORITHM,
@@ -51,11 +52,16 @@ app.include_router(
     tags=["Auth"]
 )
  
-# # from routers.v1.analysis import analysis
-# # app.include_router(
-# #     analysis,
-# #     prefix=settings.API_V1_STR,
-# #     tags=["ANALYSIS"]
-# # )
+from src.api.routers.v1.analysis import analyse_router
+app.include_router(
+    analyse_router,
+    prefix=settings.API_V1_STR,
+    tags=["ANALYSIS"]
+)
 
+
+app.include_router(
+    llm_router, 
+    prefix=settings.API_V1_STR,
+)
 

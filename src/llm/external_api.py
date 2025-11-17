@@ -6,7 +6,7 @@ import json
 from src.core.models import LLMGeneratedContent, ContentParams, TestParams, TermsParams, TopicsParams, ExampleParams
 from fastapi import HTTPException
 from pydantic import ValidationError
-from typing import TypeVar, Dict, Callable
+from typing import TypeVar, Dict, Callable, Tuple, Type
 
 
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 ValidModels = TypeVar('ValidModels', ContentParams, TestParams, TermsParams, TopicsParams, ExampleParams)
 
-TEMPLATE_MAPPING: Dict[type, (str, Callable)] = {
+TEMPLATE_MAPPING: Dict[Type[ValidModels], Tuple[str, Callable]] = {
     ContentParams: ("explanation.json", map_content_params_to_template),
     TestParams: ("test_generate.json", map_test_params_to_template),
     TopicsParams: ("topics.json", map_topics_params_to_template),
@@ -32,7 +32,7 @@ try:
 except Exception as e:
     raise logger.error(f"Error: {e}")
 
-async def generate_llm_explanation_content(content_params: ValidModels) -> LLMGeneratedContent:
+async def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
     template_name, map_func = TEMPLATE_MAPPING[type[content_params]]
     
     template = load_template(template_name)

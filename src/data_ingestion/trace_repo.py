@@ -12,21 +12,47 @@ class TraceRepository:
     Класс для работы с коллекцие TraceLog
     """
 
-    def __init__(self):
+    def __init__(self, batch_size: int = 15, timeout_sec: int = 300):
         self.db: AsyncIOMotorDatabase = get_database()
         self.collection = self.db.student_trace_log
+        self.batch_size = batch_size
+        self.timeout_sec = timeout_sec
+
+        # Буфер для всех логов (не разделяем по студентам)
+        self.log_buffer: List[TraceLog] = []
+        self.last_processed_time = time.time()
+        self.timeout_task: asyncio.Task | None = None
 
     async def get_new_log(self, change: dict):
         if change.get('operationType') == 'insert':
             log_data_dict = change.get('fullDocument')
-
-
-            try: 
+            try:
                 new_log = TraceLog(**log_data_dict)
-                print(f"Получен новый лог {new_log.timestamped} от студента с id = {new_log.student_id}. Работа Analyse_Service")
-                #TODO: #Разработать логику анализ сервиса
+                self.log_buffer.append(new_log)
+                print(f"Получен лог от студента {new_log.student_id}. Всего в буфере: {len(self.log_buffer)}")
+
+                # # Запускаем таймер при первом логе в буфере
+                # if len(self.log_buffer) == 1:
+                #     if self.timeout_task and not self.timeout_task.done():
+                #         self.timeout_task.cancel()
+                #     self.timeout_task = asyncio.create_task(self.timeout_handler()) #Подумать над таймером
+
+                # Если набралось достаточно — обрабатываем
+                if len(self.log_buffer) >= self.batch_size:
+                    await self.process_batch()
+
             except Exception as e:
-                print(f"Ошиба при обработке документа (ChangeStream): {e}")
+                print(f"Ошибка при обработке документа (ChangeStream): {e}")
+
+    async def timeout_handler(self):
+        """Сбрасывает буфер по таймауту, даже если <15 логов."""
+        await asyncio.sleep(self.timeout_sec)
+        if self.log_buffer:
+            print(f"Таймаут: обработка {len(self.log_buffer)} накопленных логов")
+            await self.process_batch()
+
+    async def process_batch(self):
+        ...
 
     async def watch_log(self):
         try:
