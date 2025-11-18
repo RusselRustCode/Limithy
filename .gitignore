@@ -12,7 +12,7 @@ eggs/
 lib/
 lib64/
 
-# Virtual environments
+# Virtual environments and
 .venv/
 env/
 
