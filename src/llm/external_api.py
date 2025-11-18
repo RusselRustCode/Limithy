@@ -7,7 +7,7 @@ from src.core.models import LLMGeneratedContent, ContentParams, TestParams, Term
 from fastapi import HTTPException
 from pydantic import ValidationError
 from typing import TypeVar, Dict, Callable, Tuple, Type
-
+from src.core.models import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ TEMPLATE_MAPPING: Dict[Type[ValidModels], Tuple[str, Callable]] = {
 
 try: 
     chat = GigaChat(
-        credentials="",
+        credentials="MDFlNjcwMzctNDIzOS00YWIyLTljNzUtOTZlMjI5NjJlZTM3OjlkOWY3ZGExLTIzNmUtNDViYS1hNTJjLTNjMzRlN2ZkZDg5NQ==",
         verify_ssl_certs=False,
         timeout=30
     )
@@ -32,8 +32,8 @@ try:
 except Exception as e:
     raise logger.error(f"Error: {e}")
 
-async def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
-    template_name, map_func = TEMPLATE_MAPPING[type[content_params]]
+def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
+    template_name, map_func = TEMPLATE_MAPPING[type(content_params)]
     
     template = load_template(template_name)
     
@@ -73,7 +73,22 @@ async def generate_llm_content(content_params: ValidModels) -> LLMGeneratedConte
 
 
 
+def main():
+    params = TestParams(
+        question_format=QuestionFormat.MULTIPLE_CHOICE,
+        cognitive_level=CognitiveLevel.ANALYSIS,
+        distractor_error_type=DistractorErrorType.CONCEPTUAL,
+        number_of_choices=NumberOfChoices.MEDIUM,
+        context_requirement=ContextRequirement.SCENARIO,
+        difficulty_level=DifficultyLevel.MEDIUM  
+    )
+    
+    content = generate_llm_content(params)
+    print(content)
 
+    
+if __name__ == "__main__":
+    main()
 
 
 
