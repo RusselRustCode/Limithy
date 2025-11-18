@@ -1,12 +1,13 @@
 from langchain_core.messages import HumanMessage
 from langchain_gigachat.chat_models import GigaChat
-from src.llm.render import load_template, map_content_params_to_template, map_test_params_to_template, render_prompt_template, map_example_params_to_template, map_terms_params_to_template, map_topics_params_to_template
+from src.llm.render import load_template, map_content_params_to_template, map_test_params_to_template, render_prompt_template, map_example_params_to_template, map_terms_params_to_template, map_topics_params_to_template, extract_json_from_text
 import logging
 import json
 from src.core.models import LLMGeneratedContent, ContentParams, TestParams, TermsParams, TopicsParams, ExampleParams
 from fastapi import HTTPException
 from pydantic import ValidationError
 from typing import TypeVar, Dict, Callable, Tuple, Type
+from src.core.models import *
 
 
 logging.basicConfig(level=logging.INFO)
@@ -32,7 +33,7 @@ try:
 except Exception as e:
     raise logger.error(f"Error: {e}")
 
-async def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
+def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
     template_name, map_func = TEMPLATE_MAPPING[type[content_params]]
     
     template = load_template(template_name)
@@ -50,14 +51,8 @@ async def generate_llm_content(content_params: ValidModels) -> LLMGeneratedConte
         raw_response_text = response.content
         logger.info(f"Ответ LLM: {raw_response_text}")
 
-        try:
-            json_response = json.loads(raw_response_text)
-        except json.JSONDecodeError:
-            logger.error(f"LLM вернул текст, не похожий на JSON: {raw_response_text}")
-            raise ValueError("LLM вернул текст, не похожий на JSON.")
-
+        json_response = extract_json_from_text(raw_response_text)
         validated_content = LLMGeneratedContent.model_validate(json_response)
-
         return validated_content
 
     except ValidationError as ve:

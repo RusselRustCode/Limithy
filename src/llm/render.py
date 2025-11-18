@@ -3,7 +3,7 @@ import os
 from typing import Dict, Any
 from string import Template
 from src.core.models import ContentParams, TestParams, OutputFormat, TopicsParams, TermsParams, ExampleParams
-
+import re
 
 PROMPT_TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "prompts")
 
