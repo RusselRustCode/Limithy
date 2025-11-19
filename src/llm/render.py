@@ -5,7 +5,7 @@ from string import Template
 from src.core.models import ContentParams, TestParams, OutputFormat, TopicsParams, TermsParams, ExampleParams
 from src.core.models import *
 import re
-import re
+import json5
 
 PROMPT_TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "prompts")
 
@@ -67,26 +67,16 @@ def render_prompt_template(template_dict: Dict[str, Any], **kwargs) -> str:
     return filled_str
 
 def extract_json_from_text(text: str) -> dict:
-    """
-    Извлекает JSON из текста, который может содержать комментарии и несколько JSON-блоков
-    """
-    # Ищем JSON-объекты в тексте с помощью регулярного выражения
-    json_pattern = r'\{[^{}]*\{[^{}]*\}[^{}]*\}|{[^{}]*}'
-    matches = re.findall(json_pattern, text, re.DOTALL)
-    
-    if not matches:
-        raise ValueError("Не удалось найти JSON в ответе LLM")
-    
-    # Берем последний найденный JSON (обычно это финальный ответ)
-    json_text = matches[-1]
-    
+    # Сначала найдем блок ```json ... ```
+    match = re.search(r'```(?:json)?\s*(\{.*\})\s*```', text, re.DOTALL)
+    if not match:
+        raise ValueError("Не удалось найти блок JSON")
+
+    json_text = match.group(1)
     try:
-        return json.loads(json_text)
-    except json.JSONDecodeError:
-        # Если не парсится, попробуем очистить от возможных лишних символов
-        json_text = re.sub(r',\s*}', '}', json_text)  # Убираем лишние запятые
-        json_text = re.sub(r',\s*]', ']', json_text)
-        return json.loads(json_text)
+        return json5.loads(json_text)  # Более толерантен к синтаксическим ошибкам
+    except Exception as e:
+        raise ValueError(f"Не удалось распарсить JSON: {e}")
 
 def main():
     temple = load_template("test_generate.json")
@@ -98,14 +88,6 @@ def main():
         context_requirement=ContextRequirement.SCENARIO,
         difficulty_level=DifficultyLevel.MEDIUM  
     )
-    map = map_test_params_to_template(params=params)
-    print(map)
-    filled_str = render_prompt_template(temple, **map)
-    print(filled_str)
-    test_string = "question_format: {question_format}, cognitive_level: {cognitive_level}"
-    rendered_test = test_string.format(**map)
-    print("Test render:", rendered_test)
-    
     
 if __name__ == "__main__":
     main()
