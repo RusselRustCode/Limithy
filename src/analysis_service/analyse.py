@@ -1,5 +1,5 @@
-from typing import List
-from src.core.models import TraceLog, AnalyseResult, StudentCluster, EffectivenessSummary
+from typing import List, Optional
+from src.core.models import TraceLog, AnalyseResult, StudentCluster, EffectivenessSummary, EngagementAnalyse
 from src.data_ingestion.trace_repo import TraceRepository
 from src.analysis_service.analyse_repo import AnalyseRepository
 class AnalysisService:
@@ -14,6 +14,13 @@ class AnalysisService:
         logs = self.trace_repo.log_buffer.copy()
         return logs
 
-    async def run_analysis(self, student_id: str, topic_id: str) -> AnalyseResult:
+    async def run_analysis_engagement(self, student_id: str, topic_id: str) -> EngagementAnalyse:
         ...
-        #Основной метод для запуска анализа
+    async def run_analysis_cluster(self) -> StudentCluster:
+        ...
+
+    async def run_analysis_effeciency_material(self) -> EffectivenessSummary:
+        ...
+
+    async def join_all_analyse(self) -> AnalyseResult:
+        ...

@@ -9,8 +9,6 @@ from pydantic import ValidationError
 from typing import TypeVar, Dict, Callable, Tuple, Type
 from src.core.models import *
 
-from src.core.models import *
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -55,8 +53,8 @@ def generate_llm_content(content_params: ValidModels) -> LLMGeneratedContent:
         logger.info(f"Ответ LLM: {raw_response_text}")
 
         json_response = extract_json_from_text(raw_response_text)
-        validated_content = LLMGeneratedContent.model_validate(json_response)
-        return validated_content
+        # validated_content = LLMGeneratedContent.model_validate(json_response)
+        return json_response
 
     except ValidationError as ve:
         logger.error(f"Ошибка валидации ответа LLM: {ve}")
@@ -82,7 +80,34 @@ def main():
     )
     
     content = generate_llm_content(params)
-    print(content)
+    print(json.dumps(content, indent=2, ensure_ascii=False))
+    print("\nreasoning:", content.get('reasoning'))
+   
+    print("options:", content.get('mini_test', {}).get('options'))
+
+
+    print("solution_steps:", content.get('mini_test', {}).get('solution_steps'))
+
+    
+    print("correct_answer:", content.get('mini_test', {}).get('correct_answer'))
+
+    
+    print("distractor_analysis:", content.get('mini_test', {}).get('distractor_analysis'))
+
+
+    options_list = content.get('mini_test', {}).get('options', [])
+    if options_list:
+        print("first option:", options_list[0])
+    else:
+        print("options list is empty")
+
+
+    distractors = content.get('mini_test', {}).get('distractor_analysis', [])
+    if distractors:
+        first_distractor = distractors[0] # Это будет словарь
+        print("first distractor text:", first_distractor.get('option_text'))
+    else:
+        print("distractor_analysis list is empty")
 
     
 if __name__ == "__main__":

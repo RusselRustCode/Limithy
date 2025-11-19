@@ -6,6 +6,7 @@ from bson import ObjectId
 from typing import List
 import asyncio
 import time
+from typing import Optional
 class TraceRepository:
 
     """
@@ -67,3 +68,35 @@ class TraceRepository:
             print(f"Ошибка {e}! Перезапуск через 3 секунды")
             await asyncio.sleep(3)
             asyncio.create_task(self.watch_log())
+
+
+    async def get_logs_by_filter(self, filter_query: dict, limit: Optional[int] = None, sort_by = "timestamp", sort_order = -1) -> Optional[List[TraceLog]]:
+        try:
+            raws = self.collection.find(filter_query)
+
+            if sort_by:
+                raws = raws.sort(sort_by, sort_order)
+            if limit:
+                raws = raws.limit(limit)
+
+            raw_logs = []
+
+            async for raw in raws:
+                raw_logs.append(raw)
+
+            if not raw_logs:
+                return None
+            
+            logs = [TraceLog(**log) for log in raw_logs]
+            return logs
+        except Exception as e:
+            print(f"Ошибка при получение логов по фильтру {filter_query}: {e}")
+            return None
+
+    async def get_log_by_student_id(self, student_id: str) -> List[TraceLog]:
+        return await self.get_logs_by_filter({"student_id": student_id})
+
+    async def get_log_by_material_id(self, material_id: str) -> List[TraceLog]:
+        return await self.get_logs_by_filter({"material_id": material_id})
+
+

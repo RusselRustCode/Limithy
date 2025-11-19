@@ -129,7 +129,7 @@ class ContextRequirement(str, Enum):
     ABSTRACT = "Абстрактный (чистая математическая формулировка)"
     SCENARIO = "Сценарный (вопрос должен быть обернут в реальную/прикладную историю)"
 
-class DifficulityLevel(str, Enum):
+class DifficultyLevel(str, Enum):
     EASY = "Легкий"
     MEDIUM = "Средний"
     HARD = "Сложный"
@@ -141,7 +141,7 @@ class TestParams(BaseModel):
     distractor_error_type: DistractorErrorType
     number_of_choices: NumberOfChoices
     context_requirement: ContextRequirement
-    difficulity_level: DifficulityLevel
+    difficulty_level: DifficultyLevel
     
 class TopicsParams(BaseModel):
     number_of_topics: int = Field(..., description="Количество тем")
@@ -177,16 +177,14 @@ class TraceLog(BaseModel):
 #-------------------------
 #Добавить компоненты для AnalyseResult
 class StudentCluster(BaseModel):
-    type: str = Field(..., description="")
-    cluster: int = Field(..., description="К какому кластеру принадлежит студент")
+    # type: str = Field(..., description="")
+    cluster_label: int = Field(..., description="К какому кластеру принадлежит студент")
 
 class EffectivenessSummary(BaseModel):
-    best_params: "ContentParams" = Field(..., description="Рекомендованные LLM-параметры для улучшения результатов в этой теме.")
-    impact_score: float = Field(..., description="Насколько эти параметры повышают средний балл (в % или скоринге).")
+    ...
 
 class EngagementAnalyse(BaseModel):
-    peak_time_hour: int = Field(..., description="")
-    time_vs_success_correlation: float = Field(..., )
+    ...
 #-------------------------
 class AnalyseResult(BaseModel):
     last_analysis_date: datetime = Field(default_factory=datetime.utcnow, description="")
