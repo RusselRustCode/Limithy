@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, EmailStr, BeforeValidator
 from bson import ObjectId
 from enum import Enum
 from datetime import datetime
-from typing import List, Optional, Annotated
+from typing import List, Optional, Annotated, Dict
 
 def convert_objectid(v):
     if isinstance(v, ObjectId):
@@ -181,10 +181,71 @@ class StudentCluster(BaseModel):
     cluster_label: int = Field(..., description="К какому кластеру принадлежит студент")
 
 class EffectivenessSummary(BaseModel):
-    ...
+    success_coeff: float = Field(..., description="Коэффициент успешности")
+    attempts_mean: float = Field(..., description="Среднее количество попыток")
+    mean_time_on_material: float = Field(..., description="среднее количество времени потраченное на материал")
+    usage_coeff: float = Field(..., description="Процент студентов использующих материал больше n минут")
+    difficlty_coeff: float = Field(..., description="Коэффициент сложности")
+    mean_time_on_question: float = Field(..., description="Среднее время потраченное на вопрос")
+    learn_curve: float = Field(..., description="Кривая обчуения")
+    success_coeff_vs_mean: float = Field(..., description="Коэффицент успешности в сравнении с средним по курсу")
+    top_distractors: List[str] = Field(..., description="Список самых частых дистракторов")
+    distractor_rates: Dict[str, int] = Field(..., description="Частота выбора дистрактора")
+    wrong_attempts: int = Field(..., description="Общее количество неудачных попыток")
+    total_events: int = Field(..., description="Общее количество взаимодействий")
+    unique_students: int = Field(..., description="Уникальные студенты")
+    
+
+#--------------EngagementAnalyse-------------------
+class ActivityMetrics(BaseModel):
+    total_events: int = Field(..., description="Общее количетсво событий")
+    events_per_day: float = Field(..., description="Событий в день")
+    avg_correctness: float = Field(..., description="Средняя правильность")
+    total_learning_time: float = Field(..., description="Общее время на обучение")
+    total_material_time: float = Field(..., description="время потраченное на материал")
+    total_question_time: float = Field(..., description="время потраченное на вопросы")
+    total_attempts: int = Field(..., description="общее кол-во попыток")
+    activity_duration_days: int = Field(..., description="Продолжительность активности дней")
+
+class LearningPAtternMetrics(BaseModel):
+    engagement_material_coeff: float = Field(..., description="Коэффициент_вовлеченности_материала")
+    attempts_rate: float = Field(..., description="Частота_попыток")
+    mean_attempts_on_question: float = Field(..., description="Ср_кол_во_попыток_на_вопрос")
+    consistency_score: float = Field(..., description="")
+    time_spent_on_material_vs_on_total_time: float = Field(..., description="Отношение времени потраченное на материал и общего времени")
+    passive_consumption: float = Field(..., description="Индекс пассивного потребления")
+    efficiency_of_efforts: float = Field(..., description="Эффективность усилий")
+
+class TempPatternMetrics(BaseModel):
+    hour_distr: Optional[int] = Field(..., description="Распределение часов")
+    activity_on_wekend_coeff: float = Field(..., description="Активность на выходных")
+    regular_coeff: float = Field(..., description="Коэффициент регулярности")
+    most_activity_day: Optional[int] = Field(..., description="Самые активные дни")
+    mean_time_session: float = Field(..., description="Среднее время сессии")
+    activity_var: float = Field(..., description="Дисперсия активности")
+
+
+class EfficiencyMetrics(BaseModel):
+    learn_efficiency: float = Field(..., description="Эффективность обучения")
+    learn_curve: float = Field(..., description="Кривая обучения")
+    knowledge_retention: float = Field(..., description="")
+    time_effiency: float = Field(..., description="Эффективность по времени")
+    session_regular: float = Field(..., description="регулярность занятий")
+
+
+class AnomalyAssesmentsMetrics(BaseModel):
+    anomaly_flag: int = Field(..., description="Принадлежность к аномалии")
+    anomaly_score: float = Field(..., description="Коэффициент аномальности")
 
 class EngagementAnalyse(BaseModel):
-    ...
+    student_id: str = Field(..., description="ID студента")
+    activity: ActivityMetrics = Field(..., description="Метрика активности")
+    leanring_patterns: LearningPAtternMetrics = Field(..., description="Паттерны обчуения")
+    temp_patterns: TempPatternMetrics = Field(..., description="Временные паттерны")
+    efficiency: EfficiencyMetrics = Field(..., description="Эффективность")
+    anomaly_assestment: AnomalyAssesmentsMetrics = Field(..., description="Признаки аномальности")
+
+
 #-------------------------
 class AnalyseResult(BaseModel):
     last_analysis_date: datetime = Field(default_factory=datetime.utcnow, description="")
